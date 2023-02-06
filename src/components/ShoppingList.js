@@ -1,4 +1,4 @@
-import { plantList } from "../datas/plantList";
+import { plantList } from "../data/plantList";
 import PlantItem from "./PlantItem";
 import "../styles/ShoppingList.css";
 
@@ -9,6 +9,22 @@ function ShoppingList({ cart, updateCart }) {
         []
     );
 
+    function addToCart(name, price) {
+        const currentPlantAdded = cart.find((plant) => plant.name === name);
+
+        if (currentPlantAdded) {
+            const cartFilteredCurrentPlant = cart.filter(
+                (plant) => plant.name !== name
+            );
+            updateCart([
+                ...cartFilteredCurrentPlant,
+                { name, price, amount: currentPlantAdded.amount + 1 },
+            ]);
+        } else {
+            updateCart([...cart, { name, price, amount: 1 }]);
+        }
+    }
+
     return (
         <div className="lmj-shopping-list">
             <ul>
@@ -17,7 +33,7 @@ function ShoppingList({ cart, updateCart }) {
                 ))}
             </ul>
             <ul className="lmj-plant-list">
-                {plantList.map(({ id, cover, name, water, light }) => (
+                {plantList.map(({ id, cover, name, water, light, price }) => (
                     <div key={id}>
                         <PlantItem
                             cover={cover}
@@ -25,7 +41,7 @@ function ShoppingList({ cart, updateCart }) {
                             water={water}
                             light={light}
                         />
-                        <button onClick={() => updateCart(cart + 1)}>
+                        <button onClick={() => addToCart(name, price)}>
                             Ajouter
                         </button>
                     </div>
